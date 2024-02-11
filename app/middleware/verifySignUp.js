@@ -24,11 +24,11 @@ checkDuplicateUsernameOrEmail = async (req, res, next) => {
       }
     });
 
-    if (user) {
-      return res.status(400).send({
-        message: "Failed! Email is already in use!"
-      });
-    }
+    // if (user) {
+    //   return res.status(400).send({
+    //     message: "Failed! Email is already in use!"
+    //   });
+    // }
 
     next();
   } catch (error) {

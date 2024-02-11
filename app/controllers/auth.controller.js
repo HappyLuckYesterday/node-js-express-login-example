@@ -2,6 +2,7 @@ const db = require("../models");
 const config = require("../config/auth.config");
 const User = db.user;
 const Role = db.role;
+const Computer = db.computer;
 
 const Op = db.Sequelize.Op;
 
@@ -17,11 +18,17 @@ exports.signup = async (req, res) => {
       password: bcrypt.hashSync(req.body.password, 8),
     });
 
+    const computer = await Computer.create({
+      name: req.body.username
+    })
+
+    const result2 = user.setComputers(computer)
+
     if (req.body.roles) {
       const roles = await Role.findAll({
         where: {
           name: {
-            [Op.or]: req.body.roles,
+           [Op.or]: req.body.roles,
           },
         },
       });
@@ -74,7 +81,7 @@ exports.signin = async (req, res) => {
     for (let i = 0; i < roles.length; i++) {
       authorities.push("ROLE_" + roles[i].name.toUpperCase());
     }
-
+    console.log(authorities)
     req.session.token = token;
 
     return res.status(200).send({
@@ -98,3 +105,5 @@ exports.signout = async (req, res) => {
     this.next(err);
   }
 };
+
+  

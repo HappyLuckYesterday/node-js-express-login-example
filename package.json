@@ -20,12 +20,19 @@
   "author": "bezkoder",
   "license": "ISC",
   "dependencies": {
+    "-": "^0.0.1",
     "bcryptjs": "^2.4.3",
     "cookie-session": "^2.0.0",
     "cors": "^2.8.5",
     "express": "^4.18.2",
+    "guid": "^0.0.12",
     "jsonwebtoken": "^9.0.0",
+    "mariadb": "^3.2.3",
     "mysql2": "^2.3.3",
-    "sequelize": "^6.31.1"
+    "ngx-pagination": "^6.0.3",
+    "randomcolor": "^0.6.2",
+    "save": "^2.9.0",
+    "sequelize": "^6.31.1",
+    "socket.io": "^4.7.4"
   }
 }
