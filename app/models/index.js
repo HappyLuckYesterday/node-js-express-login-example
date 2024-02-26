@@ -36,9 +36,9 @@ db.user.belongsToMany(db.role, {
 db.user.belongsToMany (db.call, {
   through: "user_calls"
 });
-db.call.belongsToMany (db.user, {
-  through: "user_calls"
-});
+// db.call.belongsToMany (db.user, {
+//   through: "user_calls"
+// });
 db.user.belongsToMany (db.computer, {
   through: "user_computers"
 });

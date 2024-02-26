@@ -45,7 +45,7 @@ exports.updateUser = async (req, res) => {
   console.log(req.body.id);
   const check = req.body.check == false ? 1 : 0;
   console.log(check);
-  const records = await sequelize.query("UPDATE `testdb`.`users` SET `check` = '" + check + "' WHERE `id` = '"+req.body.id+"';", {
+  const records = await sequelize.query("UPDATE `"+process.env.db_name+"`.`users` SET `check` = '" + check + "' WHERE `id` = '"+req.body.id+"';", {
     type: QueryTypes.UPDATE
   });
   // const user = await User.update(req.body, {
@@ -63,10 +63,10 @@ exports.deleteUser = async (req, res) => {
       id: req.params.id
     }
   })
-  const records2 = await sequelize.query("DELETE FROM `testdb`.`computers` WHERE `name` = '"+user.username+"';", {
+  const records2 = await sequelize.query("DELETE FROM `"+process.env.db_name+"`.`computers` WHERE `name` = '"+user.username+"';", {
     type: QueryTypes.DELETE
   });
-  const records = await sequelize.query("DELETE FROM `testdb`.`users` WHERE `id` = '"+req.params.id+"';", {
+  const records = await sequelize.query("DELETE FROM `"+process.env.db_name+"`.`users` WHERE `id` = '"+req.params.id+"';", {
     type: QueryTypes.DELETE
   });
 

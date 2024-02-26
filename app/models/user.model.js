@@ -3,6 +3,15 @@ module.exports = (sequelize, Sequelize) => {
     username: {
       type: Sequelize.STRING
     },
+    userid: {
+      type: Sequelize.STRING
+    },
+    machineid: {
+      type: Sequelize.STRING
+    },
+    machinename: {
+      type: Sequelize.STRING
+    },
     email: {
       type: Sequelize.STRING
     },
