@@ -23,6 +23,13 @@ const io = require('socket.io')(httpServer, {
   allowEIO3: true
 });
 
+const aedes = require('aedes')()
+const server = require('net').createServer(aedes.handle)
+
+server.listen(1883, function () {
+  console.log('server started and listening on port 1883')
+})
+
 //middlewares
 app.use(express.static('dist'));
 
@@ -78,10 +85,10 @@ db.sequelize.sync();
 // });
 
 Role.findAll({}).then(roles => {
-  if(roles.length == 0) {
-    initial(); 
+  if (roles.length == 0) {
+    initial();
   }
-   
+
 }).catch((error) => {
   console.log("error: ", error);
 })
@@ -119,10 +126,11 @@ io.on('connection', (socket) => {
     const selectedComputers = []
     const computers = await Computer.findAll({
     });
+
     for (var i = computers.length - 1; i >= 0; i--) {
       const users = await computers[i].getUsers()
       for (var j = users.length - 1; j >= 0; j--) {
-        if(users[j].check == 0)continue;
+        if (users[j].check == 0) continue;
         const roles = await users[j].getRoles()
         for (var k = roles.length - 1; k >= 0; k--) {
           if (roles[k].name == "admin") continue;
@@ -130,7 +138,10 @@ io.on('connection', (socket) => {
         }
       }
     }
-    socket.emit('getStates', {selectedComputers: selectedComputers, count: computers.length})
+    console.log("-------------------------------------------------------------")
+    console.log(computers.length)
+    console.log("-------------------------------------------------------------")
+    socket.emit('getStates', { selectedComputers: selectedComputers, count: computers.length })
   });
   socket.on('getAllStates', async data => {
     const selectedComputers = []
@@ -151,7 +162,7 @@ io.on('connection', (socket) => {
     console.log(selectedComputers.length)
     socket.emit('getAllStates', selectedComputers)
   });
-  
+
   socket.on('getOtherStates', async data => {
     console.log("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")
     const selectedComputers = []
@@ -160,7 +171,7 @@ io.on('connection', (socket) => {
     for (var i = computers.length - 1; i >= 0; i--) {
       const users = await computers[i].getUsers()
       for (var j = users.length - 1; j >= 0; j--) {
-        if(users[j].check == 1)continue;
+        if (users[j].check == 1) continue;
         const roles = await users[j].getRoles()
         for (var k = roles.length - 1; k >= 0; k--) {
           if (roles[k].name == "admin") continue;
@@ -210,7 +221,7 @@ io.on('connection', (socket) => {
     });
   })
 
-  socket.on('test', function(message, acknowledgement) {
+  socket.on('test', function (message, acknowledgement) {
     // do something with message...
     acknowledgement('success');  // send acknowledgement back to client
   });
@@ -227,8 +238,8 @@ io.on('connection', (socket) => {
           username: data.username,
         },
       });
-console.log("finduser: " + user)
-      
+      console.log("finduser: " + user)
+
 
       if (!user) {
         var resp = {
@@ -240,7 +251,7 @@ console.log("finduser: " + user)
         return socket.emit('loginCallback', jsonResult);
       }
 
-      
+
       if (user.check == 0) {
         var resp = {
           machineid: user.machineid,
@@ -255,7 +266,7 @@ console.log("finduser: " + user)
         data.password,
         user.password
       );
-      
+
       if (!passwordIsValid) {
         var resp = {
           machineid: '',
@@ -290,20 +301,20 @@ console.log("finduser: " + user)
 httpServer.listen(PORT, () => console.log(`listening on port ${process.env.server_port}`));
 
 function initial() {
-      Role.create({
-      id: 1,
-      name: "user",
-    });
+  Role.create({
+    id: 1,
+    name: "user",
+  });
 
-    Role.create({
-      id: 2,
-      name: "moderator",
-    });
+  Role.create({
+    id: 2,
+    name: "moderator",
+  });
 
-    Role.create({
-      id: 3,
-      name: "admin",
-    });
+  Role.create({
+    id: 3,
+    name: "admin",
+  });
 }
 
 
@@ -338,23 +349,25 @@ client.on('connect', () => {
 })
 client.on('message', async (topic, payload) => {
   console.log('Received Message:', topic, payload.toString())
+  console.log(payload);
   var data = payload.toString();
-    console.log(data);
-    data = JSON.parse(data);
-    console.log("%%%%%%%%%%%-Monitor-%%%%%%%%%%%%" + data)//.id + ", " + data.status_dev)
-    Computer.update({
-      resp: Date.now(),
-      status_s: data.status,
-      status_d: data.status_dev
-    }, {
-      where: {
-        name: data.id
-      }
-    }).catch(function (err) {
-      console.error(err.message);
-    });
+  console.log(data);
+  data = JSON.parse(data);
+  
+  console.log("%%%%%%%%%%%-Monitor-%%%%%%%%%%%%" + data)//.id + ", " + data.status_dev)
+  Computer.update({
+    resp: Date.now(),
+    status_s: data.status,
+    status_d: data.status_dev
+  }, {
+    where: {
+      name: data.id
+    }
+  }).catch(function (err) {
+    console.error(err.message);
+  });
 })
 
 client.on('connect', () => {
-  
+
 })
